@@ -2,6 +2,7 @@ from sklearn.model_selection import KFold
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 import numpy as np
+import pandas as pd
 
 
 class StackModel:
@@ -48,11 +49,18 @@ class StackModel:
 		"""
 		kf = KFold(self.n_folds)
 		train_set = []
+		
+		# we are working with numpy arrays only
+		if type(X) == pd.DataFrame:
+			X = X.values
+		
+		if type(y) == pd.Series:
+			y = y.values
 
 		for train, test in kf.split(X):
-			X_train, X_test = X.values[train], X.values[test]
-			y_train, y_test = y.values[train], y.values[test]
-
+			X_train, X_test = X[train], X[test]
+			y_train, y_test = y[train], y[test]
+			
 			mp = []
 
 			for m in self.estimators:
